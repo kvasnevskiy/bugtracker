@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:12.0
+    container_name: db-postgres
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - 5432:5432
+    volumes:
+      - db_postgres_volume:/var/lib/postgresql/data
+
+volumes:
+  db_postgres_volume:
+    driver: local
