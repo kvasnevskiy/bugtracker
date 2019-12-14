@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Bugtracker.DataAccessLayer.Enum;
 
 namespace Bugtracker.DataAccessLayer.Entities
 {

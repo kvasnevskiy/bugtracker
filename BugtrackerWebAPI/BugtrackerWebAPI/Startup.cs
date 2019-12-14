@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bugtracker.DataAccessLayer.Extensions;
+using Bugtracker.DataAccessLayer.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using AutoMapper;
 
 namespace BugtrackerWebAPI
 {
@@ -30,7 +32,11 @@ namespace BugtrackerWebAPI
             services.AddControllers();
 
             services.AddPostgresSyncContext(Configuration);
-
+            
+            services.AddAutoMapper(typeof(Startup));
+            
+            services.AddScoped<IProjectQueries, ProjectQueries>();
+            
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {

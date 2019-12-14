@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bugtracker.DataAccessLayer;
 using Bugtracker.DataAccessLayer.Entities;
+using Bugtracker.DataAccessLayer.Models;
+using Bugtracker.DataAccessLayer.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BugtrackerWebAPI.Controllers
@@ -12,25 +14,27 @@ namespace BugtrackerWebAPI.Controllers
     [Route("[controller]")]
     public class ProjectController : ControllerBase
     {
-        private readonly BugtrackerDbContext context;
+        private readonly IProjectQueries _queries;
 
-        public ProjectController(BugtrackerDbContext context)
+        public ProjectController(IProjectQueries queries)
         {
-            this.context = context;
+            _queries = queries;
         }
 
         [HttpPost]
         public Project Post(Project project)
         {
-            var added = context.Projects.Add(project);
-            context.SaveChanges();
-            return added.Entity;
+//            var added = _context.Projects.Add(project);
+//            _context.SaveChanges();
+//            return added.Entity;
+
+            return new Project();
         }
 
         [HttpGet]
-        public IEnumerable<Project> Get()
+        public async Task<List<ProjectDto>> Get()
         {
-            return context.Projects;
+            return await _queries.GetAll();
         }
     }
 }
