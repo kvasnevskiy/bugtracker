@@ -1,4 +1,4 @@
-﻿namespace Bugtracker.DataAccessLayer.Entities
+﻿namespace Bugtracker.DataAccessLayer.Enum
 {
     public enum TaskStatus
     {
