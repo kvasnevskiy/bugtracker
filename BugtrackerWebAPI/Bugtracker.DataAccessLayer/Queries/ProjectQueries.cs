@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -23,12 +24,8 @@ namespace Bugtracker.DataAccessLayer.Queries
 
         public async Task<List<ProjectDto>> GetAll()
         {
-            #region exemple
-            var zalupa = new Project();
-            var zalupaDto = _mapper.Map<ProjectDto>(zalupa);
-            #endregion
-            
-            return await _context.Projects.ProjectTo<ProjectDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var projects = await _context.Set<Project>().AsNoTracking().ToListAsync();
+            return _mapper.Map<List<ProjectDto>>(projects);
         }
     }
 }
