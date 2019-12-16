@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Bugtracker.DataAccessLayer.Extensions;
-using Bugtracker.DataAccessLayer.Queries;
+using Bugtracker.AuthenticationServer.Data;
+using Bugtracker.AuthenticationServer.Data.Entities;
+using Bugtracker.AuthenticationServer.Extensions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,11 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using AutoMapper;
-using Bugtracker.DataAccessLayer;
-using Bugtracker.DataAccessLayer.Entities;
 
-namespace BugtrackerWebAPI
+namespace Bugtracker.AuthenticationServer
 {
     public class Startup
     {
@@ -34,15 +33,19 @@ namespace BugtrackerWebAPI
             services.AddControllers();
 
             services.AddPostgresSyncContext(Configuration);
-            
-            services.AddAutoMapper(typeof(Startup));
-            
-            services.AddScoped<IProjectQueries, ProjectQueries>();
+
+            //Startup.ConfigureServices:
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bugtracker.AuthenticationServer.API", Version = "v1" });
             });
         }
 
@@ -56,7 +59,7 @@ namespace BugtrackerWebAPI
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bugtracker.AuthenticationServer.API V1");
                 c.RoutePrefix = string.Empty;
             });
 
@@ -70,7 +73,9 @@ namespace BugtrackerWebAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseIdentityServer();
 
             app.UseEndpoints(endpoints =>
             {
