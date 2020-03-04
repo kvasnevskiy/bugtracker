@@ -36,6 +36,8 @@ namespace BugtrackerWebAPI
             services.AddPostgresSyncContext(Configuration);
             
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddMemoryCache();
             
             services.AddScoped<IProjectQueries, ProjectQueries>();
 
